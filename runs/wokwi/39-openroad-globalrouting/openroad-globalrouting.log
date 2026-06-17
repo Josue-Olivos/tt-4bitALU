@@ -1,0 +1,73 @@
+Reading timing models for corner nom_tt_025C_1v80…
+Reading timing library for the 'nom_tt_025C_1v80' corner at '/home/jo2022/ttsetup/pdk/ciel/sky130/versions/8afc8346a57fe1ab7934ba5a6056ea8b43078e71/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib'…
+Reading OpenROAD database at '/home/jo2022/ttsky-verilog-template/runs/wokwi/37-openroad-resizertimingpostcts/tt_um_josue_olivos_alu.odb'…
+Reading design constraints file at '/nix/store/5qhi22zib758klv5di7jvny5b48ckmw3-python3-3.13.9-env/lib/python3.13/site-packages/librelane/scripts/base.sdc'…
+[INFO] Using clock clk…
+[INFO] Setting output delay to: 4
+[INFO] Setting input delay to: 4
+[INFO] Setting load to: 0.033442
+[INFO] Setting clock uncertainty to: 0.25
+[INFO] Setting clock transition to: 0.1499999999999999944488848768742172978818416595458984375
+[INFO] Setting timing derate to: 5%
+[INFO] Setting signal min routing layer to: met1 and clock min routing layer to met1. 
+[INFO] Setting signal max routing layer to: met4 and clock max routing layer to met4. 
++ global_route -congestion_iterations 50 -verbose -allow_congestion
+[INFO GRT-0020] Min routing layer: met1
+[INFO GRT-0021] Max routing layer: met4
+[INFO GRT-0022] Global adjustment: 30%
+[INFO GRT-0023] Grid origin: (0, 0)
+[INFO GRT-0088] Layer li1     Track-Pitch = 0.4600  line-2-Via Pitch: 0.3400
+[INFO GRT-0088] Layer met1    Track-Pitch = 0.3400  line-2-Via Pitch: 0.3400
+[INFO GRT-0088] Layer met2    Track-Pitch = 0.4600  line-2-Via Pitch: 0.3500
+[INFO GRT-0088] Layer met3    Track-Pitch = 0.6800  line-2-Via Pitch: 0.6150
+[INFO GRT-0088] Layer met4    Track-Pitch = 0.9200  line-2-Via Pitch: 0.6150
+[INFO GRT-0003] Macros: 0
+[INFO GRT-0004] Blockages: 5
+[INFO GRT-0019] Found 1 clock nets.
+[INFO GRT-0001] Minimum degree: 2
+[INFO GRT-0002] Maximum degree: 11
+
+[INFO GRT-0053] Routing resources analysis:
+          Routing      Original      Derated      Resource
+Layer     Direction    Resources     Resources    Reduction (%)
+---------------------------------------------------------------
+li1        Vertical            0             0          0.00%
+met1       Horizontal       5411          3607          33.34%
+met2       Vertical         4755          3150          33.75%
+met3       Horizontal       3440          2336          32.09%
+met4       Vertical         2370          1455          38.61%
+---------------------------------------------------------------
+
+[INFO GRT-0197] Via related to pin nodes: 448
+[INFO GRT-0198] Via related Steiner nodes: 3
+[INFO GRT-0199] Via filling finished.
+[INFO GRT-0111] Final number of vias: 549
+[INFO GRT-0112] Final usage 3D: 1855
+
+[INFO GRT-0096] Final congestion report:
+Layer         Resource        Demand        Usage (%)    Max H / Max V / Total Overflow
+---------------------------------------------------------------------------------------
+li1                  0             0            0.00%             0 /  0 /  0
+met1              3607           128            3.55%             0 /  0 /  0
+met2              3150            65            2.06%             0 /  0 /  0
+met3              2336            13            0.56%             0 /  0 /  0
+met4              1455             2            0.14%             0 /  0 /  0
+---------------------------------------------------------------------------------------
+Total            10548           208            1.97%             0 /  0 /  0
+
+[INFO GRT-0018] Total wirelength: 2566 um
+[INFO GRT-0014] Routed nets: 109
+[INFO GRT-0303] Global routing runtime = 00:00:00
+Setting global connections for newly added cells…
+[INFO] Setting global connections...
+[INFO ODB-0403] 0 connections made, 0 conflicts skipped.
+Updating metrics…
+Cell type report:                       Count       Area
+  Fill cell                                78     292.78
+  Tap cell                                225     281.52
+  Buffer                                    2      10.01
+  Timing Repair Buffer                     11     110.11
+  Multi-Input combinational cell           85     655.63
+  Total                                   401    1350.04
+Writing OpenROAD database to '/home/jo2022/ttsky-verilog-template/runs/wokwi/39-openroad-globalrouting/tt_um_josue_olivos_alu.odb'…
+Writing layout to '/home/jo2022/ttsky-verilog-template/runs/wokwi/39-openroad-globalrouting/tt_um_josue_olivos_alu.def'…

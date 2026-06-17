@@ -1,0 +1,4 @@
+
+15. Executing PROC_DLATCH pass (convert process syncs to latches).
+No latch inferred for signal `\tt_um_josue_olivos_alu.\result' from process `\tt_um_josue_olivos_alu.$proc$/home/jo2022/ttsky-verilog-template/src/project.v:33$2'.
+No latch inferred for signal `\tt_um_josue_olivos_alu.\carry_out' from process `\tt_um_josue_olivos_alu.$proc$/home/jo2022/ttsky-verilog-template/src/project.v:33$2'.

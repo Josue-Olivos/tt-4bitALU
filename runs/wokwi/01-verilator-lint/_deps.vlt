@@ -1,0 +1,5 @@
+`verilator_config
+lint_off -rule DECLFILENAME
+lint_off -rule EOFNEWLINE
+lint_off -rule UNDRIVEN -file "/home/jo2022/ttsky-verilog-template/runs/wokwi/tmp/51a27b4053af417c823b0b653d3e952f.bb.v"
+lint_off -rule UNUSEDSIGNAL -file "/home/jo2022/ttsky-verilog-template/runs/wokwi/tmp/51a27b4053af417c823b0b653d3e952f.bb.v"

@@ -1,0 +1,14 @@
+{
+    "json_h": "/home/jo2022/ttsky-verilog-template/runs/wokwi/05-yosys-jsonheader/tt_um_josue_olivos_alu.h.json",
+    "nl": "/home/jo2022/ttsky-verilog-template/runs/wokwi/06-yosys-synthesis/tt_um_josue_olivos_alu.nl.v",
+    "metrics": {
+        "design__lint_error__count": 0,
+        "design__lint_timing_construct__count": 0,
+        "design__lint_warning__count": 0,
+        "design__inferred_latch__count": 0,
+        "design__instance__count": 87,
+        "design__instance__area": 665.6384,
+        "design__instance_unmapped__count": 0,
+        "synthesis__check_error__count": 0
+    }
+}

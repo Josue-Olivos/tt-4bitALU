@@ -1,0 +1,1 @@
+openroad -exit -no_splash -metrics /home/jo2022/ttsky-verilog-template/runs/wokwi/19-openroad-tapendcapinsertion/or_metrics_out.json /nix/store/5qhi22zib758klv5di7jvny5b48ckmw3-python3-3.13.9-env/lib/python3.13/site-packages/librelane/scripts/openroad/tapcell.tcl
