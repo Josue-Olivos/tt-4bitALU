@@ -7,28 +7,17 @@
 
 /*
  * Tiny Tapeout top-level module for a 4-bit ALU.
- *
  * This module follows the required Tiny Tapeout pin interface:
- *
- *   ui_in   = 8 dedicated input pins
- *   uo_out  = 8 dedicated output pins
- *   uio_in  = 8 bidirectional input values
- *   uio_out = 8 bidirectional output values
- *   uio_oe  = 8 bidirectional output-enable controls
- *   ena     = design enable signal
- *   clk     = system clock
- *   rst_n   = active-low reset
- *
  * This ALU is combinational, so it does not actually use clk or rst_n.
  * The outputs update whenever the inputs or opcode change.
  */
 
 module tt_um_josue_olivos_alu (
-    input  wire [7:0] ui_in,    // Dedicated input pins from Tiny Tapeout
-    output wire [7:0] uo_out,   // Dedicated output pins to Tiny Tapeout
-    input  wire [7:0] uio_in,   // Bidirectional pins read as inputs
-    output wire [7:0] uio_out,  // Bidirectional pins driven as outputs
-    output wire [7:0] uio_oe,   // Output-enable for bidirectional pins
+    input  wire [7:0] ui_in,    // 8 Dedicated input pins from Tiny Tapeout
+    output wire [7:0] uo_out,   // 8 Dedicated output pins to Tiny Tapeout
+    input  wire [7:0] uio_in,   // 8 Bidirectional pins read as inputs
+    output wire [7:0] uio_out,  // 8 Bidirectional pins driven as outputs
+    output wire [7:0] uio_oe,   // 8 Output-enable for bidirectional pins
     input  wire       ena,      // Enable signal, normally high when powered
     input  wire       clk,      // Clock signal, unused in this combinational ALU
     input  wire       rst_n     // Active-low reset, unused in this combinational ALU
@@ -75,30 +64,14 @@ module tt_um_josue_olivos_alu (
 
   /*
    * Combinational ALU logic
-   *
    * always @(*) means this block re-evaluates whenever any signal used inside
    * the block changes. This is what we want for combinational logic.
-   *
    * The default assignments at the top prevent unwanted latch inference.
    * Every time the block runs, result and carry_out start with known values.
    */
-
   always @(*) begin
     result = 4'b0000;
     carry_out = 1'b0;
-
-    /*
-     * Opcode table:
-     *
-     *   000 = A + B
-     *   001 = A - B
-     *   010 = A & B
-     *   011 = A | B
-     *   100 = A ^ B
-     *   101 = ~A
-     *   110 = A << 1
-     *   111 = A >> 1
-     */
 
     case (opcode)
 
@@ -166,21 +139,14 @@ module tt_um_josue_olivos_alu (
 
   /*
    * Output mapping
-   *
    * The 8 dedicated output pins are assigned as:
-   *
-   *   uo_out[3:0] = 4-bit ALU result
-   *   uo_out[4]   = carry_out flag
-   *   uo_out[5]   = zero_flag
-   *   uo_out[6]   = unused, tied to 0
-   *   uo_out[7]   = unused, tied to 0
    */
 
-  assign uo_out[3:0] = result;
-  assign uo_out[4]   = carry_out;
-  assign uo_out[5]   = zero_flag;
-  assign uo_out[6]   = 1'b0;
-  assign uo_out[7]   = 1'b0;
+assign uo_out[3:0] = result;    //4-bit ALU result
+assign uo_out[4]   = carry_out;    //carry_out flag
+assign uo_out[5]   = zero_flag;    //zero_flag
+assign uo_out[6]   = 1'b0;    //unused, tied to 0
+assign uo_out[7]   = 1'b0;    //unused, tied to 0
 
   /*
    * Bidirectional pin handling
