@@ -5,74 +5,176 @@
 
 `default_nettype none
 
+/*
+ * Tiny Tapeout top-level module for a 4-bit ALU.
+ *
+ * This module follows the required Tiny Tapeout pin interface:
+ *
+ *   ui_in   = 8 dedicated input pins
+ *   uo_out  = 8 dedicated output pins
+ *   uio_in  = 8 bidirectional input values
+ *   uio_out = 8 bidirectional output values
+ *   uio_oe  = 8 bidirectional output-enable controls
+ *   ena     = design enable signal
+ *   clk     = system clock
+ *   rst_n   = active-low reset
+ *
+ * This ALU is combinational, so it does not actually use clk or rst_n.
+ * The outputs update whenever the inputs or opcode change.
+ */
+
 module tt_um_josue_olivos_alu (
-    input  wire [7:0] ui_in,    
-    output wire [7:0] uo_out,   
-    input  wire [7:0] uio_in,   
-    output wire [7:0] uio_out,  
-    output wire [7:0] uio_oe,   
-    input  wire       ena,      
-    input  wire       clk,      
-    input  wire       rst_n     
+    input  wire [7:0] ui_in,    // Dedicated input pins from Tiny Tapeout
+    output wire [7:0] uo_out,   // Dedicated output pins to Tiny Tapeout
+    input  wire [7:0] uio_in,   // Bidirectional pins read as inputs
+    output wire [7:0] uio_out,  // Bidirectional pins driven as outputs
+    output wire [7:0] uio_oe,   // Output-enable for bidirectional pins
+    input  wire       ena,      // Enable signal, normally high when powered
+    input  wire       clk,      // Clock signal, unused in this combinational ALU
+    input  wire       rst_n     // Active-low reset, unused in this combinational ALU
 );
 
-  wire [3:0] a;
-  wire [3:0] b;
-  wire [2:0] opcode;
+  /*
+   * Internal signal mapping
+   *
+   * The 8 dedicated input pins are split into two 4-bit operands:
+   *
+   *   ui_in[3:0] = operand A
+   *   ui_in[7:4] = operand B
+   *
+   * The lower 3 bits of uio_in select the ALU operation:
+   *
+   *   uio_in[2:0] = opcode
+   */
+
+  wire [3:0] a;        // First 4-bit ALU operand
+  wire [3:0] b;        // Second 4-bit ALU operand
+  wire [2:0] opcode;   // Operation selector
+
+  /*
+   * Internal ALU result signals
+   *
+   * result    = 4-bit output of the selected operation
+   * carry_out = carry flag for addition, or borrow-related flag for subtraction
+   * zero_flag = goes high when result equals 0
+   */
 
   reg  [3:0] result;
   reg        carry_out;
   wire       zero_flag;
 
+  // Connect Tiny Tapeout input pins to internal ALU operands.
   assign a = ui_in[3:0];
   assign b = ui_in[7:4];
+
+  // Use only the lower 3 bits of uio_in as the operation selector.
   assign opcode = uio_in[2:0];
 
+  // The zero flag is high whenever the 4-bit result is exactly 0000.
   assign zero_flag = (result == 4'b0000);
+
+  /*
+   * Combinational ALU logic
+   *
+   * always @(*) means this block re-evaluates whenever any signal used inside
+   * the block changes. This is what we want for combinational logic.
+   *
+   * The default assignments at the top prevent unwanted latch inference.
+   * Every time the block runs, result and carry_out start with known values.
+   */
 
   always @(*) begin
     result = 4'b0000;
     carry_out = 1'b0;
 
+    /*
+     * Opcode table:
+     *
+     *   000 = A + B
+     *   001 = A - B
+     *   010 = A & B
+     *   011 = A | B
+     *   100 = A ^ B
+     *   101 = ~A
+     *   110 = A << 1
+     *   111 = A >> 1
+     */
+
     case (opcode)
+
+      // Addition: add A and B.
+      // The result is 4 bits, and the 5th bit becomes carry_out.
       3'b000: begin
         {carry_out, result} = a + b;
       end
 
+      // Subtraction: subtract B from A.
+      // Since result is 4 bits, negative values wrap around in two's-complement style.
+      // The extra bit is stored in carry_out.
       3'b001: begin
         {carry_out, result} = a - b;
       end
 
+      // Bitwise AND.
+      // Each bit of A is ANDed with the matching bit of B.
       3'b010: begin
         result = a & b;
       end
 
+      // Bitwise OR.
+      // Each bit of A is ORed with the matching bit of B.
       3'b011: begin
         result = a | b;
       end
 
+      // Bitwise XOR.
+      // Each result bit is 1 only when the matching A and B bits are different.
       3'b100: begin
         result = a ^ b;
       end
 
+      // Bitwise NOT of A.
+      // B is ignored for this operation.
       3'b101: begin
         result = ~a;
       end
 
+      // Logical shift left by 1.
+      // Example: 0111 becomes 1110.
+      // The leftmost bit is discarded and a 0 enters on the right.
       3'b110: begin
         result = a << 1;
       end
 
+      // Logical shift right by 1.
+      // Example: 1000 becomes 0100.
+      // The rightmost bit is discarded and a 0 enters on the left.
       3'b111: begin
         result = a >> 1;
       end
 
+      // Default safety case.
+      // This should not happen because opcode is 3 bits and all 8 cases are covered,
+      // but it is good practice to include a default.
       default: begin
         result = 4'b0000;
         carry_out = 1'b0;
       end
+
     endcase
   end
+
+  /*
+   * Output mapping
+   *
+   * The 8 dedicated output pins are assigned as:
+   *
+   *   uo_out[3:0] = 4-bit ALU result
+   *   uo_out[4]   = carry_out flag
+   *   uo_out[5]   = zero_flag
+   *   uo_out[6]   = unused, tied to 0
+   *   uo_out[7]   = unused, tied to 0
+   */
 
   assign uo_out[3:0] = result;
   assign uo_out[4]   = carry_out;
@@ -80,8 +182,41 @@ module tt_um_josue_olivos_alu (
   assign uo_out[6]   = 1'b0;
   assign uo_out[7]   = 1'b0;
 
+  /*
+   * Bidirectional pin handling
+   *
+   * This project only uses the bidirectional pins as inputs through uio_in.
+   * It does not drive any bidirectional outputs.
+   *
+   * Therefore:
+   *
+   *   uio_out = 0
+   *   uio_oe  = 0
+   *
+   * uio_oe controls whether each bidirectional pin is an output.
+   * A value of 0 means input mode.
+   */
+
   assign uio_out = 8'b0000_0000;
   assign uio_oe  = 8'b0000_0000;
+
+  /*
+   * Unused signal handling
+   *
+   * Tiny Tapeout designs should avoid leaving inputs completely unused,
+   * because synthesis/lint tools may generate warnings.
+   *
+   * This line safely "uses" the unused inputs without affecting the design.
+   *
+   * In this ALU:
+   *   ena is unused
+   *   clk is unused
+   *   rst_n is unused
+   *   uio_in[7:3] are unused
+   *
+   * The final 1'b0 prevents this reduction-AND expression from ever being
+   * optimized into meaningful logic.
+   */
 
   wire _unused = &{ena, clk, rst_n, uio_in[7:3], 1'b0};
 
