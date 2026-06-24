@@ -26,35 +26,21 @@ module tt_um_josue_olivos_alu (
   /*
    * Internal signal mapping
    * The 8 dedicated input pins are split into two 4-bit operands:
-   *   ui_in[3:0] = operand A
-   *   ui_in[7:4] = operand B
-   * The lower 3 bits of uio_in select the ALU operation:
-   *   uio_in[2:0] = opcode
    */
-
-  wire [3:0] a;        // First 4-bit ALU operand
-  wire [3:0] b;        // Second 4-bit ALU operand
-  wire [2:0] opcode;   // Operation selector
-
-  /*
-   * Internal ALU result signals
-   * result    = 4-bit output of the selected operation
-   * carry_out = carry flag for addition, or borrow-related flag for subtraction
-   * zero_flag = goes high when result equals 0
-   */
-
-  reg  [3:0] result;
-  reg        carry_out;
-  wire       zero_flag;
 
   // Connect Tiny Tapeout input pins to internal ALU operands.
-  assign a = ui_in[3:0];
-  assign b = ui_in[7:4];
+  wire [3:0] a;             // First 4-bit ALU operand
+  wire [3:0] b;             // Second 4-bit ALU operand 
+  assign a = ui_in[3:0];    // ui_in[3:0] = operand A
+  assign b = ui_in[7:4];    // ui_in[7:4] = operand B
 
-  // Use only the lower 3 bits of uio_in as the operation selector.
-  assign opcode = uio_in[2:0];
+  reg  [3:0] result;  // 4-bit output of the selected operation
+  reg  carry_out;     // carry flag for addition, or borrow-related flag for subtraction
+  
+  wire [2:0] opcode;              // Operation selector
+  assign opcode = uio_in[2:0];    // Use only the lower 3 bits of uio_in as the operation selector.
 
-  // The zero flag is high whenever the 4-bit result is exactly 0000.
+  wire zero_flag;     // Goes high when result equals exactly 0000
   assign zero_flag = (result == 4'b0000);
 
   /*
@@ -64,6 +50,7 @@ module tt_um_josue_olivos_alu (
    * The default assignments at the top prevent unwanted latch inference.
    * Every time the block runs, result and carry_out start with known values.
    */
+    
   always @(*) begin
     result = 4'b0000;
     carry_out = 1'b0;
@@ -145,15 +132,11 @@ assign uo_out[7]   = 1'b0;    //unused, tied to 0
 
   /*
    * Bidirectional pin handling
-   *
    * This project only uses the bidirectional pins as inputs through uio_in.
    * It does not drive any bidirectional outputs.
-   *
    * Therefore:
-   *
    *   uio_out = 0
    *   uio_oe  = 0
-   *
    * uio_oe controls whether each bidirectional pin is an output.
    * A value of 0 means input mode.
    */
