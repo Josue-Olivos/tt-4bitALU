@@ -25,14 +25,10 @@ module tt_um_josue_olivos_alu (
 
   /*
    * Internal signal mapping
-   *
    * The 8 dedicated input pins are split into two 4-bit operands:
-   *
    *   ui_in[3:0] = operand A
    *   ui_in[7:4] = operand B
-   *
    * The lower 3 bits of uio_in select the ALU operation:
-   *
    *   uio_in[2:0] = opcode
    */
 
@@ -42,7 +38,6 @@ module tt_um_josue_olivos_alu (
 
   /*
    * Internal ALU result signals
-   *
    * result    = 4-bit output of the selected operation
    * carry_out = carry flag for addition, or borrow-related flag for subtraction
    * zero_flag = goes high when result equals 0
